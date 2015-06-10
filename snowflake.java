@@ -42,7 +42,7 @@ class Pan extends JPanel {
     drawFractal(3*x/4,y/4,x/2,3*y/4,detail,graf);
   }
   public void drawFractal(int startX, int startY, int endX, int endY, int details, Graphics2D graf) {
-    if (details==1 || (startX==endX && startY==endY)) {
+    if (details==1) {
       graf.drawLine(startX,startY,endX,endY);
     } else {
       drawFractal(startX,startY,(2*startX+endX)/3,(2*startY+endY)/3,details-1,graf);
@@ -51,15 +51,15 @@ class Pan extends JPanel {
       double hyp=1.73205080757*len/6;
       double slope;
       if (startY==endY) {
-        slope=0.0000000000001;
+        slope=0;
       } else {
       slope=-(startX-endX)/(startY-endY);
       }
       double a=Math.sqrt(Math.pow(hyp,2)/(1+Math.pow(slope,2)));
       int y=(int)(slope*a);
       int x=(int) a;
-      drawFractal(x,y,(2*startX+endX)/3,(2*startY+endY)/3,details-1,graf);
-      drawFractal(x,y,(2*endX+startX)/3,(2*endY+startY)/3,details-1,graf);
+      drawFractal((startX+endX)/2+x,(startY+endY)/2+y,(2*startX+endX)/3,(2*startY+endY)/3,details-1,graf);
+      drawFractal((startX+endX)/2+x,(startY+endY)/2+y,(2*endX+startX)/3,(2*endY+startY)/3,details-1,graf);
     }
   }
 }
