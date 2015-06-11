@@ -69,7 +69,7 @@ class Pan extends JPanel {
     direction=(direction+360)%360;
     drawFractal(seg/3,details-1,graf);
   }
-  public int getChangeX(int len) {
+  public int getChangeX(int len, int direction) {
     if (direction <90) return (int)(Math.sin(Math.toRadians(direction))*(double)len);
     if (direction ==90) return len;
     if (direction ==180 || direction==0) return 0;
@@ -79,7 +79,7 @@ class Pan extends JPanel {
     if (direction >270 && direction!=360) return -(int)(Math.cos(Math.toRadians(direction-270))*(double)len);
     return 5;
   }
-  public int getChangeY(int len) {
+  public int getChangeY(int len, int direction) {
     if (direction <90) return (int)(Math.cos(Math.toRadians(direction))*(double)len);
     if (direction ==90 || direction==270) return 0;
     if (direction ==180) return -len;
