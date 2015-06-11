@@ -33,33 +33,60 @@ public class SnowFrame extends JFrame implements ActionListener {
 }
 class Pan extends JPanel {
   int detail=4;
+  int direction=90;
+  int x=0;
+  int y=0;
   public void paintComponent(Graphics g) {
     Graphics2D graf=(Graphics2D) g;
-    int x=getSize().width;
-    int y=getSize().height;
-    drawFractal(x/4,y/4,3*x/4,y/4,detail,graf);
-    drawFractal(x/4,y/4,x/2,3*y/4,detail,graf);
-    drawFractal(3*x/4,y/4,x/2,3*y/4,detail,graf);
+    x=getSize().width/9;
+    y=getSize().height*5/6;
+    int segSize=(int)((float)Math.min(x,y)*3);
+    drawFractal(segSize,detail,graf);
+    direction += 120;
+    direction=(direction+360)%360;
+    drawFractal(segSize,detail,graf);
+    direction += 120;
+    direction=(direction+360)%360;
+    drawFractal(segSize,detail,graf);
+    direction += 120;
+    direction=(direction+360)%360;
   }
-  public void drawFractal(int startX, int startY, int endX, int endY, int details, Graphics2D graf) {
-    if (details==1) {
-      graf.drawLine(startX,startY,endX,endY);
-    } else {
-      drawFractal(startX,startY,(2*startX+endX)/3,(2*startY+endY)/3,details-1,graf);
-      drawFractal(endX,endY,(2*endX+startX)/3,(2*endY+startY)/3,details-1,graf);
-      double len=Math.sqrt(Math.pow((startX-endX),2)+Math.pow((endY-startY),2));
-      double hyp=1.73205080757*len/6;
-      double slope;
-      if (startY==endY) {
-        slope=0;
-      } else {
-      slope=-(startX-endX)/(startY-endY);
-      }
-      double a=Math.sqrt(Math.pow(hyp,2)/(1+Math.pow(slope,2)));
-      int y=(int)(slope*a);
-      int x=(int) a;
-      drawFractal((startX+endX)/2+x,(startY+endY)/2+y,(2*startX+endX)/3,(2*startY+endY)/3,details-1,graf);
-      drawFractal((startX+endX)/2+x,(startY+endY)/2+y,(2*endX+startX)/3,(2*endY+startY)/3,details-1,graf);
+  public void drawFractal(int seg, int details, Graphics2D graf) {
+    if (details<=1) {
+      graf.drawLine(x,y,x+getChangeX(seg),y+getChangeY(seg));
+      x=x+getChangeX(seg);
+      y=y+getChangeY(seg);
+      return;
     }
+    drawFractal(seg/3,details-1,graf);
+    direction -= 60;
+    direction=(direction+360)%360;
+    drawFractal(seg/3,details-1,graf);
+    direction += 120;
+    direction=(direction+360)%360;
+    drawFractal(seg/3,details-1,graf);
+    direction -= 60;
+    direction=(direction+360)%360;
+    drawFractal(seg/3,details-1,graf);
+  }
+  public int getChangeX(int len) {
+    if (direction <90) return (int)(Math.sin(Math.toRadians(direction))*(double)len);
+    if (direction ==90) return len;
+    if (direction ==180 || direction==0) return 0;
+    if (direction ==270) return -len;
+    if (direction >90 && direction<180) return (int)(Math.cos(Math.toRadians(direction-90))*(double)len);
+    if (direction >180 && direction<270) return -(int)(Math.sin(Math.toRadians(direction-180))*(double)len);
+    if (direction >270 && direction!=360) return -(int)(Math.cos(Math.toRadians(direction-270))*(double)len);
+    return 5;
+  }
+  public int getChangeY(int len) {
+    if (direction <90) return (int)(Math.cos(Math.toRadians(direction))*(double)len);
+    if (direction ==90 || direction==270) return 0;
+    if (direction ==180) return -len;
+    if (direction ==0) return len;
+    if (direction >90 && direction<180) return -(int)(Math.sin(Math.toRadians(direction-90))*(double)len);
+    if (direction >180 && direction<270) return -(int)(Math.cos(Math.toRadians(direction-180))*(double)len);
+    if (direction >270 && direction!=360) return (int)(Math.sin(Math.toRadians(direction-270))*(double)len);
+    return 5;
   }
 }
